@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المختبر المنطقي الاحترافي | Logic Lab Pro</title>
+    <style>
+        :root {
+            --neon-blue: #007aff;
+            --neon-green: #fffb00;
+            --neon-red: #ff3131;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --card-border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #050505;
+            color: white;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* خلفية المثلثات المتحركة */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* الهيدر واللوجو */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 5%;
+            background: rgba(0, 0, 0, 0.8);
+            border-bottom: 1px solid var(--neon-blue);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-placeholder {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(45deg, var(--neon-blue), var(--neon-green));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            box-shadow: 0 0 15px var(--neon-blue);
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* الحاوية الرئيسية */
+        .main-content {
+            padding: 40px 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .grid-layout {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+        }
+
+        /* تصميم كرت البوابة */
+        .gate-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 30px;
+            position: relative;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .gate-card:hover {
+            border-color: var(--neon-blue);
+            transform: scale(1.02);
+            box-shadow: 0 10px 30px rgba(0, 210, 255, 0.2);
+        }
+
+        .gate-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 25px;
+        }
+
+        .gate-title {
+            font-size: 1.6rem;
+            color: var(--neon-blue);
+            font-weight: 800;
+        }
+
+        .gate-logic {
+            font-family: monospace;
+            color: #aaa;
+        }
+
+        /* رسومات SVG المطورة */
+        svg {
+            filter: drop-shadow(0 0 2px rgba(0,0,0,0.5));
+        }
+
+        .wire-path {
+            stroke: #222;
+            stroke-width: 5;
+            fill: none;
+            transition: 0.4s;
+            stroke-linecap: round;
+        }
+
+        .wire-path.on {
+            stroke: var(--neon-green);
+            filter: drop-shadow(0 0 8px var(--neon-green));
+        }
+
+        .gate-body {
+            fill: #111;
+            stroke: #444;
+            stroke-width: 2;
+        }
+
+        .bulb-outer {
+            fill: #111;
+            stroke: #333;
+            transition: 0.5s;
+        }
+
+        .bulb-outer.active {
+            fill: var(--neon-green);
+            stroke: #fff;
+            filter: drop-shadow(0 0 20px var(--neon-green));
+        }
+
+        .control-btn {
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .status-led {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-left: 10px;
+            background: var(--neon-red);
+        }
+
+        .status-led.active {
+            background: var(--neon-green);
+            box-shadow: 0 0 10px var(--neon-green);
+        }
+
+    </style>
+</head>
+<body>
+
+    <canvas id="bg-canvas"></canvas>
+
+    <header>
+        <div class="logo-container">
+            <div class="https://alzahu.edu.iq/localfile/logo.png?v=1.5"></div>
+            <div class="logo-text"><span style="color:var(--neon-blue)"> </span>جامعة الزهراوي</div>
+        </div>
+        <div style="font-size: 0.9rem; color: #888;">هندسة الأمن السيبراني </div>
+    </header>
+
+    <div class="main-content">
+        <div class="grid-layout" id="gates-grid">
+            </div>
+    </div>
+
+    <script>
+        // 1. كود خلفية المثلثات المتحركة (Canvas)
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function initCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            particles = [];
+            for (let i = 0; i < 50; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 2 + 1,
+                    vx: Math.random() * 0.5 - 0.25,
+                    vy: Math.random() * 0.5 - 0.25
+                });
+            }
+        }
+
+        function drawParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.strokeStyle = "rgba(0, 210, 255, 0.15)";
+            ctx.fillStyle = "rgba(0, 210, 255, 0.3)";
+            
+            particles.forEach((p, i) => {
+                p.x += p.vx;
+                p.y += p.vy;
+                if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+                if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+
+                for (let j = i + 1; j < particles.length; j++) {
+                    const p2 = particles[j];
+                    const dist = Math.sqrt((p.x - p2.x)**2 + (p.y - p2.y)**2);
+                    if (dist < 150) {
+                        ctx.beginPath();
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(p2.x, p2.y);
+                        ctx.stroke();
+                    }
+                }
+            });
+            requestAnimationFrame(drawParticles);
+        }
+
+        window.addEventListener('resize', initCanvas);
+        initCanvas();
+        drawParticles();
+
+        // 2. كود محاكاة البوابات المنطقية
+        const gatesData = [
+            { id: 'and', name: 'AND', inputs: 2, formula: 'F = A · B' },
+            { id: 'or', name: 'OR', inputs: 2, formula: 'F = A + B' },
+            { id: 'not', name: 'NOT', inputs: 1, formula: 'F = A\'' },
+            { id: 'nand', name: 'NAND', inputs: 2, formula: 'F = (A · B)\'' },
+            { id: 'nor', name: 'NOR', inputs: 2, formula: 'F = (A + B)\'' }
+        ];
+
+        const grid = document.getElementById('gates-grid');
+        let states = gatesData.map(() => ({ a: false, b: false }));
+
+        function renderGates() {
+            grid.innerHTML = gatesData.map((gate, i) => {
+                const isSingle = gate.inputs === 1;
+                return `
+                    <div class="gate-card">
+                        <div class="gate-info">
+                            <span class="gate-title">${gate.name}</span>
+                            <span class="gate-logic">${gate.formula}</span>
+                        </div>
+                        
+                        <svg width="350" height="180" viewBox="0 0 350 180">
+                            <path id="w-a-${i}" class="wire-path" d="M 30 50 L 120 50" />
+                            ${!isSingle ? `<path id="w-b-${i}" class="wire-path" d="M 30 130 L 120 130" />` : ''}
+                            <path id="w-f-${i}" class="wire-path" d="M 200 90 L 280 90" />
+
+                            <path class="gate-body" d="M 120 30 L 180 30 Q 210 90 180 150 L 120 150 Z" />
+                            <text x="135" y="95" fill="#555" style="font-weight:bold">${gate.name}</text>
+
+                            <g class="control-btn" onclick="toggle(${i}, 'a')">
+                                <rect x="10" y="35" width="40" height="30" rx="5" fill="#222" stroke="#444"/>
+                                <text x="22" y="55" fill="white" style="font-size:12px">A</text>
+                            </g>
+                            ${!isSingle ? `
+                            <g class="control-btn" onclick="toggle(${i}, 'b')">
+                                <rect x="10" y="115" width="40" height="30" rx="5" fill="#222" stroke="#444"/>
+                                <text x="22" y="135" fill="white" style="font-size:12px">B</text>
+                            </g>` : ''}
+
+                            <circle id="bulb-${i}" cx="310" cy="90" r="20" class="bulb-outer" />
+                            <text x="306" y="95" fill="black" style="font-weight:bold; font-size:14px">F</text>
+                        </svg>
+
+                        <div style="margin-top:15px; font-size:0.8rem; color:#888;">
+                            الحالة: <span id="status-text-${i}">خامل</span>
+                            <span id="led-${i}" class="status-led"></span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            // تحديث الحالة الأولية
+            gatesData.forEach((_, i) => updateGate(i));
+        }
+
+        window.toggle = (idx, input) => {
+            states[idx][input] = !states[idx][input];
+            updateGate(idx);
+        };
+
+        function updateGate(idx) {
+            const gate = gatesData[idx];
+            const s = states[idx];
+            let result = false;
+
+            // الحساب المنطقي
+            switch(gate.id) {
+                case 'and': result = s.a && s.b; break;
+                case 'or': result = s.a || s.b; break;
+                case 'not': result = !s.a; break;
+                case 'nand': result = !(s.a && s.b); break;
+                case 'nor': result = !(s.a || s.b); break;
+            }
+
+            // تحديث الألوان بصرياً
+            document.getElementById(`w-a-${idx}`).classList.toggle('on', s.a);
+            if(gate.inputs === 2) document.getElementById(`w-b-${idx}`).classList.toggle('on', s.b);
+            
+            const outWire = document.getElementById(`w-f-${idx}`);
+            const bulb = document.getElementById(`bulb-${idx}`);
+            const led = document.getElementById(`led-${idx}`);
+            const statusTxt = document.getElementById(`status-text-${idx}`);
+
+            outWire.classList.toggle('on', result);
+            bulb.classList.toggle('active', result);
+            led.classList.toggle('active', result);
+            statusTxt.innerText = result ? "نشط (1)" : "خامل (0)";
+            statusTxt.style.color = result ? "var(--neon-green)" : "#888";
+        }
+
+        renderGates();
+    </script>
+</body>
+</html>
