@@ -3,341 +3,507 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>المختبر المنطقي الاحترافي | Logic Lab Pro</title>
+    <title>Logic Lab Pro – Cyber Security</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
     <style>
         :root {
-            --neon-blue: #007aff;
-            --neon-green: #fffb00;
-            --neon-red: #ff3131;
-            --glass-bg: rgba(255, 255, 255, 0.05);
-            --card-border: rgba(255, 255, 255, 0.1);
+            --bg: #0a0b10;
+            --card-bg: rgba(20, 25, 35, 0.6);
+            --primary: #00f2ff; /* Cyan Neon */
+            --accent: #bc13fe;  /* Purple Neon */
+            --success: #00ff9d; /* Green Neon */
+            --off: #3a4050;
+            --text-main: #e0e6ed;
+            --font-ar: 'Cairo', sans-serif;
+            --font-tech: 'Share Tech Mono', monospace;
         }
 
         body {
             margin: 0;
-            padding: 0;
-            background-color: #050505;
-            color: white;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            font-family: var(--font-ar);
             overflow-x: hidden;
         }
 
-        /* خلفية المثلثات المتحركة */
+        /* خلفية شبكية متحركة */
         #bg-canvas {
             position: fixed;
             top: 0;
             left: 0;
-            z-index: -1;
             width: 100%;
             height: 100%;
+            z-index: -1;
+            opacity: 0.4;
         }
 
-        /* الهيدر واللوجو */
         header {
+            background: rgba(10, 11, 16, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(0, 242, 255, 0.2);
+            padding: 15px 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 5%;
-            background: rgba(0, 0, 0, 0.8);
-            border-bottom: 1px solid var(--neon-blue);
-            backdrop-filter: blur(10px);
             position: sticky;
             top: 0;
             z-index: 100;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
         }
 
-        .logo-container {
-            display: flex;
-            align-items: center;
-            gap: 15px;
+        .logo {
+            font-weight: 900;
+            font-size: 1.6rem;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(0, 242, 255, 0.3);
         }
 
-        .logo-placeholder {
-            width: 45px;
-            height: 45px;
-            background: linear-gradient(45deg, var(--neon-blue), var(--neon-green));
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            box-shadow: 0 0 15px var(--neon-blue);
-        }
-
-        .logo-text {
-            font-size: 1.5rem;
-            font-weight: bold;
+        .subtitle {
+            font-size: 0.9rem;
+            color: #8892b0;
+            font-family: var(--font-tech);
             letter-spacing: 1px;
-            text-transform: uppercase;
         }
 
-        /* الحاوية الرئيسية */
-        .main-content {
+        main {
             padding: 40px 5%;
             max-width: 1400px;
             margin: 0 auto;
         }
 
-        .grid-layout {
+        .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 25px;
         }
 
-        /* تصميم كرت البوابة */
-        .gate-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(15px);
-            border: 1px solid var(--card-border);
+        .card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 20px;
-            padding: 30px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, border-color 0.3s ease;
             position: relative;
-            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            overflow: hidden;
         }
 
-        .gate-card:hover {
-            border-color: var(--neon-blue);
-            transform: scale(1.02);
-            box-shadow: 0 10px 30px rgba(0, 210, 255, 0.2);
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 15px 40px rgba(0, 242, 255, 0.1);
         }
 
-        .gate-info {
+        .card-header {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 25px;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding-bottom: 10px;
         }
 
-        .gate-title {
-            font-size: 1.6rem;
-            color: var(--neon-blue);
-            font-weight: 800;
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+        
+        .formula {
+            font-family: var(--font-tech);
+            color: var(--accent);
+            font-size: 1.2rem;
+            background: rgba(188, 19, 254, 0.1);
+            padding: 2px 10px;
+            border-radius: 6px;
         }
 
-        .gate-logic {
-            font-family: monospace;
-            color: #aaa;
-        }
-
-        /* رسومات SVG المطورة */
+        /* SVG Styles */
         svg {
-            filter: drop-shadow(0 0 2px rgba(0,0,0,0.5));
+            display: block;
+            margin: 0 auto;
+            overflow: visible;
         }
 
-        .wire-path {
-            stroke: #222;
-            stroke-width: 5;
+        .wire {
             fill: none;
-            transition: 0.4s;
+            stroke: var(--off);
+            stroke-width: 4;
             stroke-linecap: round;
+            transition: stroke 0.3s ease, filter 0.3s ease;
         }
 
-        .wire-path.on {
-            stroke: var(--neon-green);
-            filter: drop-shadow(0 0 8px var(--neon-green));
+        .wire.active {
+            stroke: var(--success);
+            filter: drop-shadow(0 0 8px var(--success));
         }
 
         .gate-body {
-            fill: #111;
+            fill: #1a1f2e;
+            stroke: var(--text-main);
+            stroke-width: 3;
+            transition: stroke 0.3s;
+        }
+        
+        .card:hover .gate-body {
+            stroke: var(--primary);
+        }
+
+        .gate-text {
+            fill: var(--text-main);
+            font-family: var(--font-tech);
+            font-size: 14px;
+            font-weight: bold;
+            text-anchor: middle;
+            dominant-baseline: middle;
+            pointer-events: none;
+        }
+
+        /* Interactive Switches */
+        .switch-group {
+            cursor: pointer;
+        }
+        .switch-rect {
+            fill: #232836;
             stroke: #444;
             stroke-width: 2;
-        }
-
-        .bulb-outer {
-            fill: #111;
-            stroke: #333;
-            transition: 0.5s;
-        }
-
-        .bulb-outer.active {
-            fill: var(--neon-green);
-            stroke: #fff;
-            filter: drop-shadow(0 0 20px var(--neon-green));
-        }
-
-        .control-btn {
-            cursor: pointer;
+            rx: 15; /* Rounded fully */
             transition: 0.3s;
         }
-
-        .status-led {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            display: inline-block;
-            margin-left: 10px;
-            background: var(--neon-red);
+        .switch-circle {
+            fill: #666;
+            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .switch-label {
+            font-family: var(--font-tech);
+            font-size: 14px;
+            fill: #888;
+            pointer-events: none;
         }
 
-        .status-led.active {
-            background: var(--neon-green);
-            box-shadow: 0 0 10px var(--neon-green);
+        /* Active Switch State */
+        .switch-group.active .switch-rect {
+            stroke: var(--primary);
+            fill: rgba(0, 242, 255, 0.1);
+        }
+        .switch-group.active .switch-circle {
+            fill: var(--primary);
+            transform: translateX(20px); /* Move toggle */
+            filter: drop-shadow(0 0 5px var(--primary));
+        }
+        .switch-group:hover .switch-rect {
+            stroke: var(--text-main);
         }
 
+        /* Output Bulb */
+        .bulb-base {
+            fill: #111;
+            stroke: #444;
+        }
+        .bulb-glass {
+            fill: #222;
+            stroke: #555;
+            transition: 0.4s;
+        }
+        .bulb-glass.active {
+            fill: var(--success);
+            stroke: #fff;
+            filter: drop-shadow(0 0 15px var(--success)) drop-shadow(0 0 30px var(--success));
+        }
+
+        /* Truth Table */
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: separate;
+            border-spacing: 0;
+            font-size: 0.9rem;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        th, td {
+            padding: 8px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            font-family: var(--font-tech);
+        }
+
+        th {
+            background: rgba(0,0,0,0.3);
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        tr {
+            transition: background 0.2s;
+        }
+
+        tr.current-state {
+            background: rgba(0, 255, 157, 0.15);
+            color: var(--success);
+            font-weight: bold;
+            box-shadow: inset 3px 0 0 var(--success);
+        }
     </style>
 </head>
 <body>
 
-    <canvas id="bg-canvas"></canvas>
+<canvas id="bg-canvas"></canvas>
 
-    <header>
-        <div class="logo-container">
-            <div class="https://alzahu.edu.iq/localfile/logo.png?v=1.5"></div>
-            <div class="logo-text"><span style="color:var(--neon-blue)"> </span>جامعة الزهراوي</div>
-        </div>
-        <div style="font-size: 0.9rem; color: #888;">هندسة الأمن السيبراني </div>
-    </header>
-
-    <div class="main-content">
-        <div class="grid-layout" id="gates-grid">
-            </div>
+<header>
+    <div>
+        <div class="logo">جامعة الزهراوي</div>
+        <div class="subtitle">كلية الهندسة - هندسة الأمن السيبراني   </div>
     </div>
+    <div style="text-align: left; direction: ltr;">
+        <span style="color:var(--primary); font-weight:bold;">Logic</span>Sim v2.0
+    </div>
+</header>
 
-    <script>
-        // 1. كود خلفية المثلثات المتحركة (Canvas)
-        const canvas = document.getElementById('bg-canvas');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
+<main>
+    <div class="grid" id="grid-container"></div>
+</main>
 
-        function initCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            particles = [];
-            for (let i = 0; i < 50; i++) {
-                particles.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    size: Math.random() * 2 + 1,
-                    vx: Math.random() * 0.5 - 0.25,
-                    vy: Math.random() * 0.5 - 0.25
-                });
-            }
-        }
+<script>
+    /* --- 1. إعداد الخلفية المتحركة --- */
+    const canvas = document.getElementById("bg-canvas");
+    const ctx = canvas.getContext("2d");
+    let particles = [];
 
-        function drawParticles() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.strokeStyle = "rgba(0, 210, 255, 0.15)";
-            ctx.fillStyle = "rgba(0, 210, 255, 0.3)";
-            
-            particles.forEach((p, i) => {
-                p.x += p.vx;
-                p.y += p.vy;
-                if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
-                if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        initParticles();
+    }
 
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                ctx.fill();
-
-                for (let j = i + 1; j < particles.length; j++) {
-                    const p2 = particles[j];
-                    const dist = Math.sqrt((p.x - p2.x)**2 + (p.y - p2.y)**2);
-                    if (dist < 150) {
-                        ctx.beginPath();
-                        ctx.moveTo(p.x, p.y);
-                        ctx.lineTo(p2.x, p2.y);
-                        ctx.stroke();
-                    }
-                }
+    function initParticles() {
+        particles = [];
+        const count = Math.floor(window.innerWidth / 20); // Responsive count
+        for (let i = 0; i < count; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                vx: (Math.random() - 0.5) * 0.5,
+                vy: (Math.random() - 0.5) * 0.5,
+                size: Math.random() * 2
             });
-            requestAnimationFrame(drawParticles);
         }
+    }
 
-        window.addEventListener('resize', initCanvas);
-        initCanvas();
-        drawParticles();
+    function animateBg() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "rgba(0, 242, 255, 0.5)";
+        
+        particles.forEach(p => {
+            p.x += p.vx;
+            p.y += p.vy;
+            if (p.x < 0) p.x = canvas.width;
+            if (p.x > canvas.width) p.x = 0;
+            if (p.y < 0) p.y = canvas.height;
+            if (p.y > canvas.height) p.y = 0;
 
-        // 2. كود محاكاة البوابات المنطقية
-        const gatesData = [
-            { id: 'and', name: 'AND', inputs: 2, formula: 'F = A · B' },
-            { id: 'or', name: 'OR', inputs: 2, formula: 'F = A + B' },
-            { id: 'not', name: 'NOT', inputs: 1, formula: 'F = A\'' },
-            { id: 'nand', name: 'NAND', inputs: 2, formula: 'F = (A · B)\'' },
-            { id: 'nor', name: 'NOR', inputs: 2, formula: 'F = (A + B)\'' }
-        ];
-
-        const grid = document.getElementById('gates-grid');
-        let states = gatesData.map(() => ({ a: false, b: false }));
-
-        function renderGates() {
-            grid.innerHTML = gatesData.map((gate, i) => {
-                const isSingle = gate.inputs === 1;
-                return `
-                    <div class="gate-card">
-                        <div class="gate-info">
-                            <span class="gate-title">${gate.name}</span>
-                            <span class="gate-logic">${gate.formula}</span>
-                        </div>
-                        
-                        <svg width="350" height="180" viewBox="0 0 350 180">
-                            <path id="w-a-${i}" class="wire-path" d="M 30 50 L 120 50" />
-                            ${!isSingle ? `<path id="w-b-${i}" class="wire-path" d="M 30 130 L 120 130" />` : ''}
-                            <path id="w-f-${i}" class="wire-path" d="M 200 90 L 280 90" />
-
-                            <path class="gate-body" d="M 120 30 L 180 30 Q 210 90 180 150 L 120 150 Z" />
-                            <text x="135" y="95" fill="#555" style="font-weight:bold">${gate.name}</text>
-
-                            <g class="control-btn" onclick="toggle(${i}, 'a')">
-                                <rect x="10" y="35" width="40" height="30" rx="5" fill="#222" stroke="#444"/>
-                                <text x="22" y="55" fill="white" style="font-size:12px">A</text>
-                            </g>
-                            ${!isSingle ? `
-                            <g class="control-btn" onclick="toggle(${i}, 'b')">
-                                <rect x="10" y="115" width="40" height="30" rx="5" fill="#222" stroke="#444"/>
-                                <text x="22" y="135" fill="white" style="font-size:12px">B</text>
-                            </g>` : ''}
-
-                            <circle id="bulb-${i}" cx="310" cy="90" r="20" class="bulb-outer" />
-                            <text x="306" y="95" fill="black" style="font-weight:bold; font-size:14px">F</text>
-                        </svg>
-
-                        <div style="margin-top:15px; font-size:0.8rem; color:#888;">
-                            الحالة: <span id="status-text-${i}">خامل</span>
-                            <span id="led-${i}" class="status-led"></span>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-            
-            // تحديث الحالة الأولية
-            gatesData.forEach((_, i) => updateGate(i));
-        }
-
-        window.toggle = (idx, input) => {
-            states[idx][input] = !states[idx][input];
-            updateGate(idx);
-        };
-
-        function updateGate(idx) {
-            const gate = gatesData[idx];
-            const s = states[idx];
-            let result = false;
-
-            // الحساب المنطقي
-            switch(gate.id) {
-                case 'and': result = s.a && s.b; break;
-                case 'or': result = s.a || s.b; break;
-                case 'not': result = !s.a; break;
-                case 'nand': result = !(s.a && s.b); break;
-                case 'nor': result = !(s.a || s.b); break;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            ctx.fill();
+        });
+        
+        // رسم خطوط خفيفة
+        ctx.strokeStyle = "rgba(0, 242, 255, 0.03)";
+        ctx.lineWidth = 1;
+        for(let i=0; i<particles.length; i++){
+            for(let j=i+1; j<particles.length; j++){
+                let dx = particles[i].x - particles[j].x;
+                let dy = particles[i].y - particles[j].y;
+                if(Math.hypot(dx, dy) < 100){
+                    ctx.beginPath();
+                    ctx.moveTo(particles[i].x, particles[i].y);
+                    ctx.lineTo(particles[j].x, particles[j].y);
+                    ctx.stroke();
+                }
             }
+        }
+        requestAnimationFrame(animateBg);
+    }
 
-            // تحديث الألوان بصرياً
-            document.getElementById(`w-a-${idx}`).classList.toggle('on', s.a);
-            if(gate.inputs === 2) document.getElementById(`w-b-${idx}`).classList.toggle('on', s.b);
-            
-            const outWire = document.getElementById(`w-f-${idx}`);
-            const bulb = document.getElementById(`bulb-${idx}`);
-            const led = document.getElementById(`led-${idx}`);
-            const statusTxt = document.getElementById(`status-text-${idx}`);
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+    animateBg();
 
-            outWire.classList.toggle('on', result);
-            bulb.classList.toggle('active', result);
-            led.classList.toggle('active', result);
-            statusTxt.innerText = result ? "نشط (1)" : "خامل (0)";
-            statusTxt.style.color = result ? "var(--neon-green)" : "#888";
+    /* --- 2. تعريف بيانات البوابات المنطقية --- */
+    const gatesData = [
+        { id: "and", name: "AND", inputs: 2, formula: "Q = A · B", 
+          table: [[0,0,0], [0,1,0], [1,0,0], [1,1,1]] },
+        
+        { id: "or", name: "OR", inputs: 2, formula: "Q = A + B", 
+          table: [[0,0,0], [0,1,1], [1,0,1], [1,1,1]] },
+        
+        { id: "not", name: "NOT", inputs: 1, formula: "Q = A'", 
+          table: [[0,1], [1,0]] },
+        
+        { id: "nand", name: "NAND", inputs: 2, formula: "Q = (A·B)'", 
+          table: [[0,0,1], [0,1,1], [1,0,1], [1,1,0]] },
+        
+        { id: "nor", name: "NOR", inputs: 2, formula: "Q = (A+B)'", 
+          table: [[0,0,1], [0,1,0], [1,0,0], [1,1,0]] },
+        
+        { id: "xor", name: "XOR", inputs: 2, formula: "Q = A ⊕ B", 
+          table: [[0,0,0], [0,1,1], [1,0,1], [1,1,0]] },
+          
+        { id: "xnor", name: "XNOR", inputs: 2, formula: "Q = (A ⊕ B)'", 
+          table: [[0,0,1], [0,1,0], [1,0,0], [1,1,1]] }
+    ];
+
+    // حالة المدخلات لكل بوابة
+    let logicState = gatesData.map(() => ({ a: 0, b: 0 }));
+
+    /* --- 3. وظائف الرسم المساعدة --- */
+    function getGatePath(type) {
+        // رسم أشكال البوابات بدقة
+        const base = "M120 40"; 
+        if(type === "and" || type === "nand") 
+            return "M120 40 L150 40 A45 45 0 0 1 150 130 L120 130 Z";
+        
+        if(type === "or" || type === "nor") 
+            return "M120 40 Q150 85 120 130 Q220 85 120 40 Z";
+        
+        if(type === "xor" || type === "xnor") 
+            return "M110 40 Q140 85 110 130 M125 40 Q155 85 125 130 Q225 85 125 40 Z";
+        
+        // NOT Gate (Triangle)
+        return "M120 40 L120 130 L190 85 Z"; 
+    }
+
+    /* --- 4. بناء واجهة المستخدم --- */
+    const gridContainer = document.getElementById("grid-container");
+
+    gridContainer.innerHTML = gatesData.map((gate, index) => {
+        const isSingle = gate.inputs === 1;
+        const hasBubble = ["not", "nand", "nor", "xnor"].includes(gate.id);
+        const centerX = gate.id === "not" ? 145 : (["xor","xnor"].includes(gate.id) ? 165 : 155);
+
+        return `
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">${gate.name} Gate</div>
+                <div class="formula">${gate.formula}</div>
+            </div>
+
+            <svg width="100%" height="160" viewBox="0 0 340 160">
+                <path id="wire-a-${index}" class="wire" d="M60 ${isSingle ? 85 : 55} L120 ${isSingle ? 85 : 55}" />
+                ${!isSingle ? `<path id="wire-b-${index}" class="wire" d="M60 115 L120 115" />` : ''}
+                <path id="wire-out-${index}" class="wire" d="M${hasBubble?215:200} 85 L280 85" />
+
+                <path class="gate-body" d="${getGatePath(gate.id)}" />
+                
+                <text x="${centerX}" y="85" class="gate-text">${gate.name}</text>
+
+                ${hasBubble ? `<circle cx="${gate.id==='not'?198:208}" cy="85" r="6" class="gate-body" fill="none"/>` : ''}
+
+                <g class="switch-group" onclick="toggleSwitch(${index}, 'a')" id="btn-a-${index}">
+                    <rect x="10" y="${isSingle ? 70 : 40}" width="50" height="30" class="switch-rect" />
+                    <circle cx="25" cy="${isSingle ? 85 : 55}" r="10" class="switch-circle" />
+                    <text x="25" y="${isSingle ? 65 : 35}" class="switch-label">A</text>
+                </g>
+
+                ${!isSingle ? `
+                <g class="switch-group" onclick="toggleSwitch(${index}, 'b')" id="btn-b-${index}">
+                    <rect x="10" y="100" width="50" height="30" class="switch-rect" />
+                    <circle cx="25" cy="115" r="10" class="switch-circle" />
+                    <text x="25" y="95" class="switch-label">B</text>
+                </g>` : ''}
+
+                <g transform="translate(280, 85)">
+                    <circle r="15" class="bulb-glass" id="bulb-${index}" />
+                    <path d="M-5 15 L5 15 L5 20 L-5 20 Z" fill="#444"/>
+                </g>
+            </svg>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>A</th>
+                        ${!isSingle ? '<th>B</th>' : ''}
+                        <th>OUT (Q)</th>
+                    </tr>
+                </thead>
+                <tbody id="table-${index}">
+                    ${gate.table.map(row => {
+                        const inputs = row.slice(0, row.length - 1); // [0,1]
+                        const output = row[row.length - 1]; // 1
+                        const rowId = inputs.join(""); 
+                        return `<tr data-state="${rowId}">
+                            ${row.map(cell => `<td>${cell}</td>`).join("")}
+                        </tr>`;
+                    }).join("")}
+                </tbody>
+            </table>
+        </div>
+        `;
+    }).join("");
+
+    /* --- 5. المنطق التفاعلي --- */
+    function toggleSwitch(index, inputKey) {
+        // عكس الحالة (0 -> 1 أو 1 -> 0)
+        logicState[index][inputKey] = logicState[index][inputKey] === 0 ? 1 : 0;
+        updateGate(index);
+    }
+
+    function updateGate(index) {
+        const state = logicState[index];
+        const gate = gatesData[index];
+        let result = 0;
+
+        // حساب النتيجة المنطقية
+        switch (gate.id) {
+            case "and": result = state.a & state.b; break;
+            case "or": result = state.a | state.b; break;
+            case "not": result = !state.a ? 1 : 0; break;
+            case "nand": result = !(state.a & state.b) ? 1 : 0; break;
+            case "nor": result = !(state.a | state.b) ? 1 : 0; break;
+            case "xor": result = (state.a !== state.b) ? 1 : 0; break;
+            case "xnor": result = (state.a === state.b) ? 1 : 0; break;
         }
 
-        renderGates();
-    </script>
+        // تحديث الواجهة (UI)
+        
+        // 1. المفاتيح
+        const btnA = document.getElementById(`btn-a-${index}`);
+        if(state.a) btnA.classList.add("active"); else btnA.classList.remove("active");
+        
+        if (gate.inputs === 2) {
+            const btnB = document.getElementById(`btn-b-${index}`);
+            if(state.b) btnB.classList.add("active"); else btnB.classList.remove("active");
+        }
+
+        // 2. الأسلاك
+        document.getElementById(`wire-a-${index}`).classList.toggle("active", state.a);
+        if (gate.inputs === 2) {
+            document.getElementById(`wire-b-${index}`).classList.toggle("active", state.b);
+        }
+        document.getElementById(`wire-out-${index}`).classList.toggle("active", result);
+
+        // 3. المصباح
+        document.getElementById(`bulb-${index}`).classList.toggle("active", result);
+
+        // 4. الجدول (إضاءة الصف الصحيح)
+        const tableBody = document.getElementById(`table-${index}`);
+        const rows = tableBody.querySelectorAll("tr");
+        rows.forEach(r => r.classList.remove("current-state"));
+
+        const currentStateKey = gate.inputs === 1 ? `${state.a}` : `${state.a}${state.b}`;
+        const activeRow = tableBody.querySelector(`tr[data-state="${currentStateKey}"]`);
+        if (activeRow) activeRow.classList.add("current-state");
+    }
+
+    // تشغيل التحديث الأولي لجميع البوابات
+    gatesData.forEach((_, i) => updateGate(i));
+
+</script>
 </body>
 </html>
